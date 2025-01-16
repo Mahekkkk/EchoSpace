@@ -22,7 +22,7 @@
         <h2 class="text-center text-primary">Register User</h2>
     </div>
     <?php $validation = \Config\Services::validation(); ?>
-    <form action="<?= route_to('user.register.handler') ?>" method="POST">
+    <form action="<?= route_to('user.register.handler') ?>" method="POST" id="register-form">
         <?= csrf_field() ?>
         <?php if (!empty(session()->getFlashdata('success'))): ?>
             <div class="alert alert-success">
@@ -48,8 +48,10 @@
                 </button>
             </div>
         <?php endif; ?>
+
+        <!-- Name Field -->
         <div class="input-group custom">
-            <input type="text" class="form-control form-control-lg" placeholder="Full Name" name="name" value="<?= set_value('name') ?>">
+            <input type="text" class="form-control form-control-lg" placeholder="Full Name" name="name" value="<?= set_value('name') ?>" required>
             <div class="input-group-append custom">
                 <span class="input-group-text"><i class="icon-copy dw dw-user1"></i></span>
             </div>
@@ -59,8 +61,10 @@
                 <?= esc($validation->getError('name')) ?>
             </div>
         <?php endif; ?>
+
+        <!-- Email Field -->
         <div class="input-group custom">
-            <input type="email" class="form-control form-control-lg" placeholder="Email Address" name="email" value="<?= set_value('email') ?>">
+            <input type="email" class="form-control form-control-lg" placeholder="Email Address" name="email" value="<?= set_value('email') ?>" required>
             <div class="input-group-append custom">
                 <span class="input-group-text"><i class="dw dw-email"></i></span>
             </div>
@@ -70,18 +74,24 @@
                 <?= esc($validation->getError('email')) ?>
             </div>
         <?php endif; ?>
+
+        <!-- Password Field -->
         <div class="input-group custom">
-            <input type="password" class="form-control form-control-lg" placeholder="Password" id="password" name="password">
+            <input type="password" class="form-control form-control-lg" placeholder="Password" id="password" name="password" onkeyup="validatePassword()" required>
             <div class="input-group-append custom">
                 <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
                 <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility()">Show</button>
             </div>
         </div>
+        <div id="password-validation" class="d-block text-danger" style="margin-top: -10px; margin-bottom: 15px; font-size: 0.9rem;"></div>
+
         <?php if ($validation->getError('password')): ?>
             <div class="d-block text-danger" style="margin-top: -25px; margin-bottom: 15px;">
                 <?= esc($validation->getError('password')) ?>
             </div>
         <?php endif; ?>
+
+        <!-- Submit Button -->
         <div class="row">
             <div class="col-sm-12">
                 <div class="input-group mb-0">
@@ -92,6 +102,7 @@
     </form>
 </div>
 
+<!-- JavaScript -->
 <script>
     function togglePasswordVisibility() {
         var passwordField = document.getElementById("password");
@@ -102,6 +113,27 @@
         } else {
             passwordField.type = "password";
             toggleButton.innerText = "Show";
+        }
+    }
+
+    function validatePassword() {
+        const password = document.getElementById('password').value;
+        const validationMessage = document.getElementById('password-validation');
+        
+        const requirements = [
+            { regex: /.{8,}/, message: "At least 8 characters" },
+            { regex: /[A-Z]/, message: "At least one uppercase letter" },
+            { regex: /[a-z]/, message: "At least one lowercase letter" },
+            { regex: /[0-9]/, message: "At least one digit" },
+            { regex: /[@$!%*?&]/, message: "At least one special character (@, $, !, %, *, ?, &)" },
+        ];
+
+        const failedRequirements = requirements.filter(req => !req.regex.test(password));
+        
+        if (failedRequirements.length > 0) {
+            validationMessage.innerHTML = failedRequirements.map(req => req.message).join("<br>");
+        } else {
+            validationMessage.innerHTML = "<span class='text-success'>Password looks good!</span>";
         }
     }
 </script>

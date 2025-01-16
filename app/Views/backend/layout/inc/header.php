@@ -65,19 +65,7 @@
 				</a>
 			</div>
 		</div>
-		<div class="user-notification">
-			<div class="dropdown">
-				<a class="dropdown-toggle no-arrow" href="#" role="button" data-toggle="dropdown">
-					<i class="icon-copy dw dw-notification"></i>
-					<span class="badge notification-active">0</span>
-				</a>
-				<div class="dropdown-menu dropdown-menu-right">
-					<div class="notification-list mx-h-350 customscroll">
-						<ul></ul>
-					</div>
-				</div>
-			</div>
-		</div>
+		
 
 		<div class="user-info-dropdown">
 			<div class="dropdown">
@@ -101,7 +89,7 @@
 			</div>
 		</div>
 		<div class="github-link">
-			<a href="https://github.com/Aman-0402" target="_blank"><img src="/backend/vendors/images/github.svg" alt="" /></a>
+			<a href="https://github.com/Mahekkkk/EchoSpace" target="_blank"><img src="/backend/vendors/images/github.svg" alt="" /></a>
 		</div>
 	</div>
 </div>

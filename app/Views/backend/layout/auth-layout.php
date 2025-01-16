@@ -39,10 +39,9 @@
 		href="/backend/vendors/styles/icon-font.min.css" />
 	<link rel="stylesheet" type="text/css" href="/backend/vendors/styles/style.css" />
 
-	<?= $this->renderSection('stylesheets') ?>;
+	<?= $this->renderSection('stylesheets') ?>
 
 </head>
-
 <body class="login-page">
 	<div class="login-header box-shadow">
 		<div

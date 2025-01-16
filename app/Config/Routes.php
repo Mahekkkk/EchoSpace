@@ -13,8 +13,7 @@ $routes->get('/about', 'BlogController::about', ['as' => 'about']);
 $routes->get('/privacy-policy', 'BlogController::privacyPolicy', ['as' => 'privacy-policy']);
 $routes->get('/terms-conditions', 'BlogController::termsConditions', ['as' => 'terms-conditions']);
 $routes->get('/timepass-game', 'BlogController::timePassGame', ['as' => 'timepass-game']);
-
-
+$routes->post('/user/update-profile-picture', 'AdminController::updateProfilePicture', ['as' => 'update-profile-picture']);
 
 // Add the test email route
 $routes->get('test-email', 'TestEmailController::sendTestEmail');
@@ -52,10 +51,6 @@ $routes->group('admin', static function ($routes) {
         $routes->get('edit-user/(:num)', 'AdminController::editUser/$1', ['as' => 'admin.edit.user']);
         $routes->get('delete-user/(:num)', 'AdminController::deleteUser/$1', ['as' => 'admin.delete.user']);
 
-
-
-
-
         // Routes for Post
         $routes->group('posts', static function ($routes) {
             $routes->get('new-post', 'AdminController::addPost', ['as' => 'new-post']);
@@ -75,7 +70,6 @@ $routes->group('admin', static function ($routes) {
             $routes->get('view/(:num)', 'AdminController::viewUserPost/$1', ['as' => 'admin.user-posts.view']);
             $routes->post('approve', 'AdminController::approveUserPost', ['as' => 'admin.approve-user-post']);
             $routes->get('approved', 'AdminController::approvedUserPosts', ['as' => 'admin.approved-user-posts']);
-            // $routes->get('reject/(:num)', 'AdminController::rejectPost/$1', ['as' => 'admin.user-posts.reject']);
             $routes->post('delete-approved-post', 'AdminController::deleteApprovedUserPost', ['as' => 'admin.delete-approved-user-post']);
         });
     });
@@ -92,11 +86,11 @@ $routes->group('admin', static function ($routes) {
 });
 
 // Fallback route for undefined paths
-// $routes->set404Override('Errors::show404'); // Define a 404 handler if needed
+$routes->set404Override('Errors::show404');
 
 $routes->group('user', static function ($routes) {
     $routes->get('register', 'UserController::registerForm', ['as' => 'user.register.form']);
-    // $routes->post('register', 'UserController::registerHandler', ['as' => 'user.register.handler']);
+    $routes->post('register', 'UserController::registerHandler', ['as' => 'user.register.handler']);
     $routes->get('login', 'UserController::loginForm', ['as' => 'user.login.form']);
     $routes->post('login', 'UserController::loginHandler', ['as' => 'user.login.handler']);
     $routes->get('logout', 'UserController::logoutHandler', ['as' => 'user.logout']);
@@ -111,34 +105,9 @@ $routes->group('user', static function ($routes) {
     $routes->get('create-post', 'UserController::createPost', ['as' => 'user.create-post']);
     $routes->post('store-post', 'UserController::storePost', ['as' => 'user.store-post']);
     $routes->post('delete-post', 'UserController::deletePost', ['as' => 'user.delete-post']);
-    // $routes->get('forgot-password', 'AuthController::forgotPasswordForm', ['as' => 'user.forgot_password.form']);
-    // $routes->post('forgot-password', 'AuthController::forgotPasswordHandler', ['as' => 'user.forgot_password.handler']);
-    // $routes->get('reset-password/(:any)', 'AuthController::resetPasswordForm/$1', ['as' => 'user.reset_password.form']);
-    // $routes->post('reset-password', 'AuthController::resetPasswordHandler', ['as' => 'user.reset_password.handler']);
     $routes->get('forgot-password', 'AuthController::userForgotPasswordForm', ['as' => 'user.forgot_password.form']);
     $routes->post('forgot-password', 'AuthController::userSendPasswordResetLink', ['as' => 'user.forgot_password.handler']);
     $routes->get('reset-password/(:any)', 'AuthController::userResetPasswordForm/$1', ['as' => 'user.reset_password.form']);
     $routes->post('reset-password', 'AuthController::userResetPasswordHandler', ['as' => 'user.reset_password.handler']);
-    // User Registration and Login
-    $routes->post('register', 'UserController::registerHandler', ['as' => 'user.register.handler']);
-    $routes->post('login', 'UserController::userLoginHandler', ['as' => 'user.login.handler']);
-    // Email Verification
     $routes->get('verify-email/(:any)', 'UserController::verifyEmail/$1', ['as' => 'user.verify-email']);
 });
-// $routes->post('site-users/update/(:num)', 'UserController::updateSiteUser/$1', ['as' => 'user.update']);
-// $routes->post('admin-users/update/(:num)', 'UserController::updateAdmin/$1', ['as' => 'admin.update']);
-
-
-// // Blog routes for regular users
-// $routes->group('blog', ['filter' => 'cifilter:site_user'], static function ($routes) {
-//     $routes->get('create', 'BlogController::createForm', ['as' => 'blog.create.form']);
-//     $routes->post('create', 'BlogController::createHandler', ['as' => 'blog.create.handler']);
-//     $routes->get('my-blogs', 'BlogController::myBlogs', ['as' => 'blog.my-blogs']);
-// });
-
-// // Admin routes for blog approvals
-// $routes->group('admin', static function ($routes) {
-//     $routes->get('pending-blogs', 'AdminController::pendingBlogs', ['as' => 'admin.pending.blogs']);
-//     $routes->post('approve-blog/(:num)', 'AdminController::approveBlog/$1', ['as' => 'admin.approve.blog']);
-//     $routes->post('reject-blog/(:num)', 'AdminController::rejectBlog/$1', ['as' => 'admin.reject.blog']);
-// });

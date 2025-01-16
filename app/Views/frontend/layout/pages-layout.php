@@ -13,6 +13,7 @@
   <meta charset="utf-8">
   <title><?= isset($pageTitle) ? $pageTitle : 'New Page title'; ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+
   <meta name="<?= csrf_token() ?>" content="<?= csrf_hash() ?>">
   <?= $this->renderSection('page_meta') ?>
 
@@ -42,7 +43,6 @@
     <section class="section">
       <div class="container">
         <?= $this->renderSection('content') ?>
-      </div>
       </div>
     </section>
   </main>

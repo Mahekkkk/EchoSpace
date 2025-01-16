@@ -226,69 +226,80 @@
             });
         });
 
-        // Trigger file input when "Upload New Image" is clicked
-        $(document).on('click', '#trigger_upload', function() {
-            $('#user_profile_file').click();
-        });
+        // Profile Picture Upload and Remove
+        $(document).ready(function() {
+            // Trigger file input when "Upload New Image" is clicked
+            $(document).on('click', '#trigger_upload', function() {
+                $('#user_profile_file').click();
+            });
 
-        // Initialize ijaboCropTool for uploading a new profile picture
-        $('#user_profile_file').ijaboCropTool({
-            preview: '.ci-avatar-photo',
-            setRatio: 1,
-            allowedExtensions: ['jpg', 'jpeg', 'png'],
-            processUrl: '/user/update-profile-picture',
-            withCSRF: {
-                csrfName: $('meta[name="csrf-token"]').attr('content'),
-                csrfHash: $('meta[name="csrf-hash"]').attr('content'),
-            },
-            onSuccess: function(message) {
-                toastr.success(message);
-            },
-            onError: function(message) {
-                toastr.error(message);
-            },
-        });
+            // Initialize ijaboCropTool for uploading a new profile picture
+            $('#user_profile_file').ijaboCropTool({
+                preview: '.ci-avatar-photo', // The selector for the image preview element
+                setRatio: 1, // Aspect ratio for cropping (1:1 for square image)
+                allowedExtensions: ['jpg', 'jpeg', 'png'], // Allowed file types
+                processUrl: '/user/update-profile-picture', // The URL to process the image
+                withCSRF: {
+                    csrfName: $('meta[name="csrf-token"]').attr('content'),
+                    csrfHash: $('meta[name="csrf-hash"]').attr('content'),
+                },
+                onSuccess: function(message) {
+                    toastr.success(message); // Show success message
+                },
+                onError: function(message) {
+                    toastr.error(message); // Show error message
+                },
+                onSelect: function() {
+                    // This callback is triggered when the user selects an image for cropping
+                    console.log("Image selected for cropping");
+                },
+                onLoad: function() {
+                    // This callback is triggered once the cropping tool has loaded the image
+                    console.log("Crop tool loaded");
+                },
+            });
 
-        // Handle Remove Image action
-        $(document).on('click', '#trigger_remove', function(e) {
-            e.preventDefault();
+            // Handle Remove Image action
+            $(document).on('click', '#trigger_remove', function(e) {
+                e.preventDefault();
 
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'This will remove your profile picture.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, remove it!',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '/user/remove-profile-picture',
-                        method: 'POST',
-                        dataType: 'json',
-                        data: {
-                            csrf_token: $('meta[name="csrf-token"]').attr('content'),
-                        },
-                        success: function(response) {
-                            if (response.status === 1) {
-                                toastr.success(response.msg);
-                                $('.ci-avatar-photo').attr('src', '/images/users/default_avatar1.gif');
-                            } else {
-                                toastr.error(response.msg);
-                            }
-                        },
-                        error: function(xhr) {
-                            toastr.error('An error occurred while removing your picture.');
-                            console.error(xhr.responseText);
-                        },
-                    });
-                }
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This will remove your profile picture.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, remove it!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/user/remove-profile-picture',
+                            method: 'POST',
+                            dataType: 'json',
+                            data: {
+                                csrf_token: $('meta[name="csrf-token"]').attr('content'),
+                            },
+                            success: function(response) {
+                                if (response.status === 1) {
+                                    toastr.success(response.msg);
+                                    $('.ci-avatar-photo').attr('src', '/images/users/default_avatar1.gif');
+                                } else {
+                                    toastr.error(response.msg);
+                                }
+                            },
+                            error: function(xhr) {
+                                toastr.error('An error occurred while removing your picture.');
+                                console.error(xhr.responseText);
+                            },
+                        });
+                    }
+                });
             });
         });
 
         // Toggle Password Visibility
-        $('.toggle-password').on('click', function() {
+        $(document).on('click', '.toggle-password', function() {
             const targetInput = $('#' + $(this).data('target'));
             const icon = $(this).find('i');
 
@@ -301,34 +312,14 @@
             }
         });
     });
-    document.addEventListener("DOMContentLoaded", function () {
-    const togglePasswordButtons = document.querySelectorAll(".toggle-password");
-
-    togglePasswordButtons.forEach((button) => {
-        button.addEventListener("click", function () {
-            const targetInputId = this.getAttribute("data-target");
-            const targetInput = document.getElementById(targetInputId);
-            const icon = this.querySelector("i");
-
-            if (targetInput) {
-                if (targetInput.type === "password") {
-                    targetInput.type = "text";
-                    icon.classList.remove("fa-eye");
-                    icon.classList.add("fa-eye-slash");
-                } else {
-                    targetInput.type = "password";
-                    icon.classList.remove("fa-eye-slash");
-                    icon.classList.add("fa-eye");
-                }
-            } else {
-                console.error(`No input field found with ID: ${targetInputId}`);
-            }
-        });
-    });
-});
-
 </script>
+
+<!-- ijaboCropTool CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ijabo-crop-tool/dist/css/ijaboCropTool.min.css" />
+
+<!-- FontAwesome for icon (used in cropping tool) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
 <style>
     .input-group .btn {
         border-left: none;
@@ -338,7 +329,5 @@
         border-right: none;
     }
 </style>
-
-
 
 <?= $this->endSection(); ?>
